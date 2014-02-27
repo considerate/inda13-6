@@ -3,17 +3,17 @@ import java.util.concurrent.RecursiveAction;
 import java.util.Arrays;
 
 public class ParallelQuicksort  {
-	Quicksort sorter = new Quicksort();
+	private Quicksort sorter = new Quicksort();
 
 	public void sort(int[] array) {
-		sort(array, Quicksort.PivotAlgorithms.MEDIAN9);
+		sort(array, Quicksort.PivotAlgorithms.MEDIAN9, new ForkJoinPool());
 	}
 
-	public void sort(int[] array, int pivotAlgorithm) {
+	public void sort(int[] array, int pivotAlgorithm, ForkJoinPool pool) {
 		if(sorter.handleBasicCases(array)) {
 			return;
 		}
-		new ForkJoinPool().invoke(new SortAction(array, 0, array.length - 1, pivotAlgorithm));
+		pool.invoke(new SortAction(array, 0, array.length - 1, pivotAlgorithm));
 	}
 
 	private class SortAction extends RecursiveAction {
@@ -39,7 +39,7 @@ public class ParallelQuicksort  {
             int first = this.first;
             int last = this.last;
             int[] range = new int[2];
-            Quicksort.partition(array, first, last, range);
+            sorter.partition(array, first, last, range);
             int low = range[0];
             int high = range[1];
             if (last - first < PARALLEL_THRESHOLD) {

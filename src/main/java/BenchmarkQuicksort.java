@@ -1,11 +1,13 @@
 import com.google.caliper.BeforeExperiment;
 import com.google.caliper.Benchmark;
+import com.google.caliper.api.Macrobenchmark;
 import com.google.caliper.Param;
 
 import com.google.caliper.runner.CaliperMain;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ForkJoinPool;
 
 
 /**
@@ -13,9 +15,9 @@ import java.util.Random;
  */
 public final class BenchmarkQuicksort {
 
-  @Param({"1000", "10000", "100000","1000000"}) private int length;
+  @Param({"100000"}) private int length;
 
-  /*@Param({"0","1","2","3"})*/ private int algorithm = 1;
+  /*@Param({"0","1","2","3"})*/ private int algorithm = 3;
 
   @Param private Distribution distribution;
 
@@ -23,12 +25,14 @@ public final class BenchmarkQuicksort {
   private int[] copy;
   private Quicksort sorter;
   private ParallelQuicksort parallelSorter;
+  private ForkJoinPool pool;
 
   @BeforeExperiment void setUp() throws Exception {
     values = distribution.create(length);
     copy = new int[length];
     sorter = new Quicksort();
     parallelSorter = new ParallelQuicksort();
+    pool = new ForkJoinPool();
   }
 
   //@Benchmark 
@@ -48,13 +52,11 @@ public final class BenchmarkQuicksort {
     }
   }
 
-  @Benchmark 
-  void parallel_quicksort(int reps) {
+  @Macrobenchmark 
+  void parallel_quicksort() {
     int algorithm = this.algorithm;
-    for (int i = 0; i < reps; i++) {
-      System.arraycopy(values, 0, copy, 0, values.length);
-      parallelSorter.sort(copy, algorithm);
-    }
+    System.arraycopy(values, 0, copy, 0, values.length);
+    parallelSorter.sort(copy, algorithm, pool);
   }
 
   public enum Distribution {

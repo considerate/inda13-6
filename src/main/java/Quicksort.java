@@ -12,16 +12,6 @@ public class Quicksort {
 		public static final int MEDIAN9 = 3;
 	}
 
-	private static class Range {
-		public int first;
-		public int last;
-		public Range(int first, int last) {
-			this.first = first;
-			this.last = last;
-		}
-	}
-
-
 	private byte isSorted(int[] array) {
 		byte prev = 0;
 		if(array.length < 2) {
@@ -99,6 +89,7 @@ public class Quicksort {
 
 	private void sort(int[] array, int pivotAlgorithm, int maxElements, int first, int last) {
 		if(handleBasicCases(array)) {
+			//Do assumption sort
 			return;
 		}
 
@@ -540,7 +531,7 @@ public class Quicksort {
 		range[1] = high;
 	}
 
-	public static void partition(int[] array, int first, int last, int[] range) {
+	public void partition(int[] array, int first, int last, int[] range) {
 		int pivot = 0;
 		if(last-first > 9) {
 		    // Choose a pivot element.
@@ -586,11 +577,11 @@ public class Quicksort {
 		int i = low;
 		while(i <= high) {
 			if(array[i] < pivot) {
-				swapStatic(array, i, low);
+				swap(array, i, low);
 				i++;
 				low++;
 			} else if (array[i] > pivot) {
-				swapStatic(array, i, high);
+				swap(array, i, high);
 				high--;
 			} else {
 				i++;
@@ -604,11 +595,5 @@ public class Quicksort {
 		int a0 = array[a];
 		array[a] = array[b];
 		array[b] = a0; 
-	}
-
-	private static void swapStatic(int[] array, int a, int b) {
-		int a0 = array[a];
-		array[a] = array[b];
-		array[b] = a0; 		
 	}
 }
