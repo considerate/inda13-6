@@ -28,15 +28,11 @@ public class Quicksort {
 			if(prev == 1) {
 				if(array[i-1] < array[i]) {
 					continue;
-				} else if(array[i-1] > array[i]) {
-					return 0;
 				} else {
 					return 0;
 				}
 			} else {
-				if(array[i-1] < array[i]) {
-					return 0;
-				} else if(array[i-1] > array[i]) {
+				if(array[i-1] > array[i]) {
 					continue;
 				} else {
 					return 0;
