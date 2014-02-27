@@ -15,32 +15,45 @@ public final class BenchmarkQuicksort {
 
   @Param({"1000", "10000", "100000","1000000"}) private int length;
 
-  @Param({"0","1","2","3"}) private int algorithm;
+  /*@Param({"0","1","2","3"})*/ private int algorithm = 1;
 
   @Param private Distribution distribution;
 
   private int[] values;
   private int[] copy;
   private Quicksort sorter;
+  private ParallelQuicksort parallelSorter;
 
   @BeforeExperiment void setUp() throws Exception {
     values = distribution.create(length);
     copy = new int[length];
     sorter = new Quicksort();
+    parallelSorter = new ParallelQuicksort();
   }
 
-  @Benchmark void sortJavaArraysSort(int reps) {
+  //@Benchmark 
+  void sortJavaArraysSort(int reps) {
     for (int i = 0; i < reps; i++) {
       System.arraycopy(values, 0, copy, 0, values.length);
       Arrays.sort(copy);
     }
   }
 
-  @Benchmark void qsort(int reps) {
+  @Benchmark 
+  void quicksort(int reps) {
     int algorithm = this.algorithm;
     for (int i = 0; i < reps; i++) {
       System.arraycopy(values, 0, copy, 0, values.length);
-      sorter.qsort(copy, algorithm, 7);
+      sorter.sort(copy, algorithm);
+    }
+  }
+
+  @Benchmark 
+  void parallel_quicksort(int reps) {
+    int algorithm = this.algorithm;
+    for (int i = 0; i < reps; i++) {
+      System.arraycopy(values, 0, copy, 0, values.length);
+      parallelSorter.sort(copy, algorithm);
     }
   }
 

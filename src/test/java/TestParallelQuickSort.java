@@ -12,13 +12,13 @@ import java.util.Arrays;
 import java.util.Random;
 
 @RunWith(JUnit4.class)
-public class TestQuickSort {
-	private Quicksort sorter;
+public class TestParallelQuickSort {
+	private ParallelQuicksort sorter;
 	private Random random = new Random();
 
 	@Before
 	public void setUp() {
-		sorter = new Quicksort();
+		sorter = new ParallelQuicksort();
 	}
 
 	@After
@@ -63,26 +63,6 @@ public class TestQuickSort {
 			assertEquals(true, sorted);
 		}
 	}
-	
-	//@Test
-	public void testSortPermutations() {
-		for(int count = 100; count < 10000; count += random.nextInt(1000)) {
-			int[] array = new int[count];
-			
-			for(int i = 0; i < count; i++) {
-				array[i] = random.nextInt();
-			}
-			for(int j = 0; j < count; j++) {
-				for(int i = 0; i < count; i++) {
-					if(i != j) {
-						//sorter.swap(array,i, j);
-					}
-					sorter.sort(array);
-					assertEquals(true, isSorted(array));			
-				}
-			}
-		}
-	}
 
 	private boolean isSorted(int[] array) {
 		boolean sorted = true;
@@ -95,5 +75,4 @@ public class TestQuickSort {
 		}
 		return sorted;
 	}
-
 }

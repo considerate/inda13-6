@@ -15,6 +15,7 @@ public final class FindMinRange {
 
   @Param({"10000"}) private int length;
   @Param({
+    "0",
     "1",
     "2",
     "3",
@@ -36,9 +37,9 @@ public final class FindMinRange {
     "19",
     "20"
   }) private int minRange;
-  @Param({"0","1", "2", "3"}) private int algorithm;
+  private int algorithm = 1;
 
-  @Param private Distribution distribution;
+  private Distribution distribution = Distribution.RANDOM;
 
   private int[] values;
   private int[] copy;

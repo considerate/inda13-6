@@ -4,8 +4,7 @@ import java.util.Random;
 public class Quicksort {
 
 	private Random random = new Random();
-	private static final int MAX_STACK_DEPTH = 5000;
-	private static final int FASTEST_MIN_RANGE = 7;
+	private static final int FASTEST_MIN_RANGE = 12;
 	public static final class PivotAlgorithms {
 		public static final int FIRST = 0;
 		public static final int RANDOM = 1;
@@ -22,9 +21,6 @@ public class Quicksort {
 		}
 	}
 
-	public void sort(int[] array) {
-		sort(array, PivotAlgorithms.MEDIAN9, FASTEST_MIN_RANGE);
-	}
 
 	private byte isSorted(int[] array) {
 		byte prev = 0;
@@ -68,17 +64,42 @@ public class Quicksort {
 		}
 	}
 
+	public void sort(int[] array) {
+		sort(array, PivotAlgorithms.MEDIAN9, FASTEST_MIN_RANGE, 0, array.length-1);
+	}
+
+	void sortRange(int[] array, int first, int last) {
+		sort(array, PivotAlgorithms.MEDIAN9, FASTEST_MIN_RANGE, first, last);
+	}
+
+	void sortRange(int[] array, int pivotAlgorithm, int first, int last) {
+		sort(array, pivotAlgorithm, FASTEST_MIN_RANGE, first, last);
+	}
+
+	public void sort(int[] array, int pivotAlgorithm) {
+		sort(array, pivotAlgorithm, FASTEST_MIN_RANGE, 0, array.length-1);
+	}
+
 	public void sort(int[] array, int pivotAlgorithm, int maxElements) {
-		int first = 0;
-		int last = array.length-1;
+		sort(array, pivotAlgorithm, maxElements, 0, array.length-1);
+	}
+
+	public boolean handleBasicCases(int[] array) {
 		byte sorted = isSorted(array);
 		if(sorted != 0) {
 			if(sorted == 1) {
-				return;
+				return true;
 			} else if(sorted == -1) {
 				reverse(array);
-				return;
+				return true;
 			}
+		}		
+		return false;
+	}
+
+	private void sort(int[] array, int pivotAlgorithm, int maxElements, int first, int last) {
+		if(handleBasicCases(array)) {
+			return;
 		}
 
 		if(maxElements > 0) {
@@ -116,7 +137,7 @@ public class Quicksort {
 
 	void insertionsort(int[] array, int first, int last){
 	    for (int i = first+1; i <= last; i++) {
-		    for(int j = i ; j > 0 ; j--){
+		    for(int j = i ; j > first ; j--){
 			    if(array[j] < array[j-1]){
 			    	swap(array,j, j-1);
 			    }
@@ -464,46 +485,7 @@ public class Quicksort {
 	    qsortMedian9IS(array, first, low-1, maxElements);
 	    qsortMedian9IS(array, high+1, last, maxElements);		
 	}
-	/*
-
-	void qsortRandomIS(int[] array, int first, int last, int maxElements) {
-		// Less than two elements
-		if(first >= last) {
-			return;
-		}
-		//Small array, fall back to faster for low n values insertion sort.
-	    if (last-first < maxElements) {
-	    	insertionsort(array, first, last);
-	        return;
-	    }
-
-	    // Choose a pivot element.
-	    int count = last-first;
-		int index = random.nextInt(count); //get a random index for the pivot.
-		int pivot = array[first+index]; 
-
-
-		//Inline partitioning.
-		int low = first;
-		int high = last;
-		int i = low;
-		while(i <= high) {
-			if(array[i] < pivot) {
-				swap(array, i, low);
-				i++;
-				low++;
-			} else if (array[i] > pivot) {
-				swap(array, i, high);
-				high--;
-			} else {
-				i++;
-			}
-		}
-		
-	    qsortRandomIS(array, first, low-1, maxElements);
-	    qsortRandomIS(array, high+1, last, maxElements);
-	}*/
-
+	
 
 	// Sorts the elements of the subvector v[first..last].
 	void qsort(int[] array, int first, int last) {
@@ -558,9 +540,75 @@ public class Quicksort {
 		range[1] = high;
 	}
 
-	public void swap(int[] array, int a, int b) {
+	public static void partition(int[] array, int first, int last, int[] range) {
+		int pivot = 0;
+		if(last-first > 9) {
+		    // Choose a pivot element.
+		    int eighth = (last-first)/8;
+		    int leftmidleft = first+eighth;
+		    int leftmid = first+eighth*2;
+		    int leftmidright = leftmid+eighth*3;
+			int mid = first+eighth*4;
+			int rightmidleft = first+eighth*5;
+			int rightmid = first+eighth*6;
+			int rightmidright = first+eighth*7;
+			//first leftmidleft leftmid leftmidright mid rightmidleft rightmid rightmidright last;
+			int a,b,c;
+			a = array[first];
+			b = array[leftmidleft];
+			c = array[leftmid];
+			int median1 = Math.max(Math.min(a,b), Math.min(Math.max(a,b),c));
+			a = array[leftmidright];
+			b = array[mid];
+			c = array[rightmidleft];
+			int median2 = Math.max(Math.min(a,b), Math.min(Math.max(a,b),c));
+			a = array[rightmid];
+			b = array[rightmidright];
+			c = array[last];
+			int median3 = Math.max(Math.min(a,b), Math.min(Math.max(a,b),c));	
+			a = median1;
+			b = median2;
+			c = median3;
+			int median = Math.max(Math.min(a,b), Math.min(Math.max(a,b),c));
+			pivot = median;
+		} else {
+			int mid = first+(last-first)/2;
+			int a = array[first];
+			int b = array[mid];
+			int c = array[last];
+			int median = Math.max(Math.min(a,b), Math.min(Math.max(a,b),c));
+			pivot = median; 		
+		}
+
+
+		int low = first;
+		int high = last;
+		int i = low;
+		while(i <= high) {
+			if(array[i] < pivot) {
+				swapStatic(array, i, low);
+				i++;
+				low++;
+			} else if (array[i] > pivot) {
+				swapStatic(array, i, high);
+				high--;
+			} else {
+				i++;
+			}
+		}	
+		range[0] = low;
+		range[1] = high;	
+	}
+
+	private void swap(int[] array, int a, int b) {
 		int a0 = array[a];
 		array[a] = array[b];
 		array[b] = a0; 
+	}
+
+	private static void swapStatic(int[] array, int a, int b) {
+		int a0 = array[a];
+		array[a] = array[b];
+		array[b] = a0; 		
 	}
 }
