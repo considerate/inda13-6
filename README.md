@@ -27,5 +27,7 @@ Same test, for reproducability:
 Selecting **12** as breaking point for insertion sort.
 
 ##Benchmark different pivot strategies with the chosen pivot vs Arrays.sort
+X axis denotes the  number of elements for the given distribution of data and Y axis is number of nano seconds spent on average on each element in the array.
+
 ![](assets/img/Graph1.png)
 ![](assets/img/Graph2.png)
