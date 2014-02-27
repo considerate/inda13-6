@@ -31,3 +31,7 @@ X axis denotes the  number of elements for the given distribution of data and Y 
 
 ![](assets/img/Graph1.png)
 ![](assets/img/Graph2.png)
+
+##Benchmarking with parallelized quicksort vs sequential quicksort
+[Result](https://microbenchmarks.appspot.com/runs/90a40cb4-9362-4fee-b090-398a4b8e24a2#r:scenario.benchmarkSpec.parameters.distribution,scenario.benchmarkSpec.methodName)
+By parallelilizing the quicksort we get a significant performance improvement for random data but a small decrease in performance for the basic cases such as already sorted case.
